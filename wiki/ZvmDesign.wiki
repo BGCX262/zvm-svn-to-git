@@ -1,0 +1,72 @@
+#labels Featured,Phase-Design
+= Design =
+
+We're building the z-machine out of a number of smaller classes that represent
+'subsystems'.  The theory is then that the main class (the CPU) can instantiate exactly
+one copy of each helper class, and then have all subsystems at its disposal.
+
+Here are our various components. (Please keep this up to date!)
+
+== Completed ==
+
+  * Bitfield
+    * converts a numeric value into a list of bits
+    * bits are addressable using standard python slice notation
+
+  * ZMemory
+    * represents the 'main memory' of the computer.
+    * readable and writable through standard python slice notation
+    * validates memory layout
+    * enforces read-only areas of memory
+    * can return both word-addresses and 'packed' addresses if asked
+
+  * ZStringFactory
+    * knows how to decode zscii data
+    * understands alphabets, abbreviations, special chars, unicode
+    * call ZStringFactory.get(address) to return a zstring as a printable ASCII string.
+
+  * ZOpDecoder
+    * manages the Program Counter
+    * knows how to decode opcodes and operands
+    * ZOpDecoder.get_next_instruction() returns [opcode, [operand, ...]]
+    * has APIs for fetching store addresses, branch offsets, and zstring operands.
+
+  * ZStackManager
+    * manages story-file's data stack
+    * manages interpreter's stack frames ("call stack") and local variables
+    * has APIs to get/set routine-local variables
+    * has APIs to push/pop values from routine-local stack
+    * has APIs to save state and execute new routine, and to restore state when returning
+
+  * ZObjectParser
+    * able to return information about objects in the object tree
+      * parent/child/sibling objects
+      * attributes
+      * properties
+
+  * ZLexer
+    * parses dictionaries of words
+    * performs lexical analysis of user input
+
+
+== In Progress ==
+
+  * ZCpu
+    * has pointers to instances of ALL the other classes
+    * actually executes the opcodes!
+
+  * ZMachine
+    * the main container class for everything
+    * instantiates all the subsystem classes, gives them sane starting points
+    * passes them to the ZCpu, calls ZCpu.run()
+
+  * Quetzal
+    * loads and saves games in the standard 'quetzal' file format.
+
+  * ZAudio, ZFilesystem
+    * I/O abstraction layer
+
+  * ZUI
+    * Abstract class meant to be subclassed by 3rd-party app
+    * Defines APIs to actually print to screen, read keyboard, access disk, etc.
+    * Used by ZIOManager

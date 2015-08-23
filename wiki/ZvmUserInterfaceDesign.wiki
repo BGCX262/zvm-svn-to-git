@@ -1,0 +1,21 @@
+#labels Phase-Design,Featured
+Here is a vision of how the user interface should be abstracted from the 'core' processing engine.
+
+We define a single python class (ZUI.py) with nothing but stubs, meant to be subclassed and overridden.  We then write three implementations of ZUI.
+
+One implementation is done via irclib.py, so that we can write a new ircbot which can join a channel and allow multiple people to play interactive fiction.  (We've already written many ircbots using irclib.py!)
+
+Another implementation uses Sugar APIs, so that a new Sugar app can be written for OLPC kids.  Imagine all those kids playing interactive fiction!
+
+The third implementation is Hard, because it crosses out of Python and into C.  It turns out that many interactive fiction front-ends already use an abstracted UI API called 'GLK'.  Things are even more complex because GLK is a C API, not a python one.
+
+The way this works is:
+
+  * a glk-compliant C application creates a user interface (curses, GUI, etc.)
+  * the same C application invokes glk_main()
+  * pyglk is the 'glk program' which implements glk_main(), which in this case launches an embedded python interpreter
+  * pyglk then talking to the C frontend to do UI stuff, and to the python z-machine for processing the story.
+
+Here's a diagram showing how it all plugs together.
+
+http://zvm.googlecode.com/svn/trunk/docs/images/zvm-flow-control.png
